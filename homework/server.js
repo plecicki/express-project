@@ -17,11 +17,11 @@ app.use('/user', (req, res, next) => {
 });
 
 app.get(['/','/home'], (req, res) => {
-  res.show('index.html');
+  res.show('index.hbs');
 });
 
 app.get('/about', (req, res) => {
-  res.show('about.html');
+  res.show('about.hbs');
 });
 
 app.use((req, res) => {
