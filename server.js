@@ -1,6 +1,8 @@
 const express = require('express');
 const path = require('path');
 const hbs = require('express-handlebars');
+const multer  = require('multer')
+const upload = multer({ dest: 'uploads/' })
 
 const app = express();
 
@@ -9,12 +11,14 @@ app.use(express.static(path.join(__dirname, '/views/public')));
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
-app.post('/contact/send-message', (req, res) => {
+app.post('/contact/send-message', upload.single('projectDesign'), (req, res) => {
 
   const { author, sender, title, message } = req.body;
+  const projectDesign = req.file;
 
-  if(author && sender && title && message) {
-    res.render('contact', { isSent: true });
+  if(author && sender && title && projectDesign && message) {
+    console.log(projectDesign.originalname);
+    res.render('contact', { isSent: true, projectDesignFileName: projectDesign.originalname });
   }
   else {
     res.render('contact', { isError: true });
