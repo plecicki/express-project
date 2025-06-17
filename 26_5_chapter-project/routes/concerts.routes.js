@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-let concertsDb = require('./../db').db.concerts;
+let concertsDb = require('./../db').concerts;
 const uuid = require("uuid");
 
 router.route('/concerts').get((req, res) => {
