@@ -1,27 +1,36 @@
-import { useEffect } from 'react';
+import {useEffect, useState} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Button, Progress, Alert } from 'reactstrap';
-import { getSeats, loadSeatsRequest, getRequests } from '../../../redux/seatsRedux';
+import {getSeats, loadSeatsRequest, getRequests, loadSeats} from '../../../redux/seatsRedux';
 import './SeatChooser.scss';
+import io from 'socket.io-client';
 
 const SeatChooser = ({ chosenDay, chosenSeat, updateSeat }) => {
   const dispatch = useDispatch();
   const seats = useSelector(getSeats);
   const requests = useSelector(getRequests);
+  const [socket, setSocket] = useState(null);
 
   useEffect(() => {
     dispatch(loadSeatsRequest());
+  }, [dispatch]);
 
-    const interval = setInterval(() => {
-      dispatch(loadSeatsRequest());
-    }, 120000);
+  useEffect(() => {
+    const socket = io(process.env.NODE_ENV === 'production' ? '' : 'ws://localhost:8000', { transports: ['websocket'] });
+    setSocket(socket);
 
-    return () => clearInterval(interval);
+    socket.on('seatsUpdated', (seats) => {
+      dispatch(loadSeats(seats));
+    });
+
+    return () => {
+      socket.disconnect();
+    };
   }, [dispatch]);
 
   useEffect(() => {
     if (requests['ADD_SEAT']?.success) {
-      dispatch(loadSeatsRequest());
+
     }
   }, [requests['ADD_SEAT'], dispatch]);
 
