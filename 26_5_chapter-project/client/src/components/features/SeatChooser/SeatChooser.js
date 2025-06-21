@@ -51,7 +51,16 @@ const SeatChooser = ({ chosenDay, chosenSeat, updateSeat }) => {
         <small id="pickHelp" className="form-text text-muted ms-2"><Button color="secondary" /> – seat is already taken</small>
         <small id="pickHelpTwo" className="form-text text-muted ms-2"><Button outline color="primary" /> – it's empty</small>
       </div>
-      { (requests['LOAD_SEATS'] && requests['LOAD_SEATS'].success) && <div className="seats">{[...Array(50)].map((x, i) => prepareSeat(i+1) )}</div>}
+      { (requests['LOAD_SEATS'] && requests['LOAD_SEATS'].success) && (
+        <>
+          <div className="seats">{[...Array(50)].map((x, i) => prepareSeat(i+1))}</div>
+          <p className="mt-3">
+            Free seats: {
+            50 - seats.filter(seat => seat.day === chosenDay).length
+          } / 50
+          </p>
+        </>
+      )}
       { (requests['LOAD_SEATS'] && requests['LOAD_SEATS'].pending) && <Progress animated color="primary" value={50} /> }
       { (requests['LOAD_SEATS'] && requests['LOAD_SEATS'].error) && <Alert color="warning">Couldn't load seats...</Alert> }
     </div>
